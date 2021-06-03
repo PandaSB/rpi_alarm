@@ -21,6 +21,8 @@ private:
     void AlarmOn (int) ;
     void AlarmOff (int) ;
 
+    QLabel *status;
+
     QString Code;
     QString ValidCode="1234";
 };

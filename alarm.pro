@@ -5,7 +5,7 @@
 TEMPLATE = app
 TARGET = alarm
 INCLUDEPATH += .
-QT       += core widgets
+QT       += core widgets testlib
 
 
 # The following define makes your compiler warn you if you use any
@@ -20,5 +20,5 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 # Input
-HEADERS += mainwindow.h
-SOURCES += alarm.cpp mainwindow.cpp
+HEADERS += mainwindow.h ibutton.h status.h
+SOURCES += alarm.cpp mainwindow.cpp ibutton.cpp status.cpp

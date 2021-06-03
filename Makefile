@@ -12,10 +12,10 @@ MAKEFILE      = Makefile
 
 CC            = gcc
 CXX           = g++
-DEFINES       = -DQT_DEPRECATED_WARNINGS -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
+DEFINES       = -DQT_DEPRECATED_WARNINGS -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_TESTLIB_LIB -DQT_CORE_LIB -DQT_TESTCASE_BUILDDIR='"/home/pi/alarm"'
 CFLAGS        = -pipe -O2 -Wall -W -D_REENTRANT -fPIC $(DEFINES)
 CXXFLAGS      = -pipe -O2 -Wall -W -D_REENTRANT -fPIC $(DEFINES)
-INCPATH       = -I. -I. -isystem /usr/include/arm-linux-gnueabihf/qt5 -isystem /usr/include/arm-linux-gnueabihf/qt5/QtWidgets -isystem /usr/include/arm-linux-gnueabihf/qt5/QtGui -isystem /usr/include/arm-linux-gnueabihf/qt5/QtCore -I. -I/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/linux-g++
+INCPATH       = -I. -I. -isystem /usr/include/arm-linux-gnueabihf/qt5 -isystem /usr/include/arm-linux-gnueabihf/qt5/QtWidgets -isystem /usr/include/arm-linux-gnueabihf/qt5/QtGui -isystem /usr/include/arm-linux-gnueabihf/qt5/QtTest -isystem /usr/include/arm-linux-gnueabihf/qt5/QtCore -I. -I/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/linux-g++
 QMAKE         = /usr/lib/qt5/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -38,7 +38,7 @@ DISTNAME      = alarm1.0.0
 DISTDIR = /home/pi/alarm/.tmp/alarm1.0.0
 LINK          = g++
 LFLAGS        = -Wl,-O1
-LIBS          = $(SUBLIBS) -lQt5Widgets -lQt5Gui -lQt5Core -lGLESv2 -lpthread -latomic 
+LIBS          = $(SUBLIBS) -lQt5Widgets -lQt5Gui -lQt5Test -lQt5Core -lGLESv2 -lpthread -latomic 
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -51,10 +51,16 @@ OBJECTS_DIR   = ./
 ####### Files
 
 SOURCES       = alarm.cpp \
-		mainwindow.cpp moc_mainwindow.cpp
+		mainwindow.cpp \
+		ibutton.cpp \
+		status.cpp moc_mainwindow.cpp \
+		moc_ibutton.cpp
 OBJECTS       = alarm.o \
 		mainwindow.o \
-		moc_mainwindow.o
+		ibutton.o \
+		status.o \
+		moc_mainwindow.o \
+		moc_ibutton.o
 DIST          = /usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/common/unix.conf \
 		/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/common/linux.conf \
@@ -120,6 +126,7 @@ DIST          = /usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/qt.prf \
 		/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/resources.prf \
 		/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/moc.prf \
+		/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/testlib_defines.prf \
 		/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/unix/opengl.prf \
 		/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/uic.prf \
 		/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/unix/thread.prf \
@@ -129,8 +136,12 @@ DIST          = /usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/exceptions.prf \
 		/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/lex.prf \
-		alarm.pro mainwindow.h alarm.cpp \
-		mainwindow.cpp
+		alarm.pro mainwindow.h \
+		ibutton.h \
+		status.h alarm.cpp \
+		mainwindow.cpp \
+		ibutton.cpp \
+		status.cpp
 QMAKE_TARGET  = alarm
 DESTDIR       = 
 TARGET        = alarm
@@ -207,6 +218,7 @@ Makefile: alarm.pro /usr/lib/arm-linux-gnueabihf/qt5/mkspecs/linux-g++/qmake.con
 		/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/qt.prf \
 		/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/resources.prf \
 		/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/moc.prf \
+		/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/testlib_defines.prf \
 		/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/unix/opengl.prf \
 		/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/uic.prf \
 		/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/unix/thread.prf \
@@ -219,6 +231,7 @@ Makefile: alarm.pro /usr/lib/arm-linux-gnueabihf/qt5/mkspecs/linux-g++/qmake.con
 		alarm.pro \
 		/usr/lib/arm-linux-gnueabihf/libQt5Widgets.prl \
 		/usr/lib/arm-linux-gnueabihf/libQt5Gui.prl \
+		/usr/lib/arm-linux-gnueabihf/libQt5Test.prl \
 		/usr/lib/arm-linux-gnueabihf/libQt5Core.prl
 	$(QMAKE) -o Makefile alarm.pro
 /usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/spec_pre.prf:
@@ -286,6 +299,7 @@ Makefile: alarm.pro /usr/lib/arm-linux-gnueabihf/qt5/mkspecs/linux-g++/qmake.con
 /usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/qt.prf:
 /usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/resources.prf:
 /usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/moc.prf:
+/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/testlib_defines.prf:
 /usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/unix/opengl.prf:
 /usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/uic.prf:
 /usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/unix/thread.prf:
@@ -298,6 +312,7 @@ Makefile: alarm.pro /usr/lib/arm-linux-gnueabihf/qt5/mkspecs/linux-g++/qmake.con
 alarm.pro:
 /usr/lib/arm-linux-gnueabihf/libQt5Widgets.prl:
 /usr/lib/arm-linux-gnueabihf/libQt5Gui.prl:
+/usr/lib/arm-linux-gnueabihf/libQt5Test.prl:
 /usr/lib/arm-linux-gnueabihf/libQt5Core.prl:
 qmake: FORCE
 	@$(QMAKE) -o Makefile alarm.pro
@@ -314,8 +329,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents mainwindow.h $(DISTDIR)/
-	$(COPY_FILE) --parents alarm.cpp mainwindow.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents mainwindow.h ibutton.h status.h $(DISTDIR)/
+	$(COPY_FILE) --parents alarm.cpp mainwindow.cpp ibutton.cpp status.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -347,13 +362,18 @@ compiler_moc_predefs_clean:
 moc_predefs.h: /usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/data/dummy.cpp
 	g++ -pipe -O2 -Wall -W -dM -E -o moc_predefs.h /usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all: moc_mainwindow.cpp
+compiler_moc_header_make_all: moc_mainwindow.cpp moc_ibutton.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_mainwindow.cpp
+	-$(DEL_FILE) moc_mainwindow.cpp moc_ibutton.cpp
 moc_mainwindow.cpp: mainwindow.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
-	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/pi/alarm/moc_predefs.h -I/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/linux-g++ -I/home/pi/alarm -I/home/pi/alarm -I/usr/include/arm-linux-gnueabihf/qt5 -I/usr/include/arm-linux-gnueabihf/qt5/QtWidgets -I/usr/include/arm-linux-gnueabihf/qt5/QtGui -I/usr/include/arm-linux-gnueabihf/qt5/QtCore -I/usr/include/c++/8 -I/usr/include/arm-linux-gnueabihf/c++/8 -I/usr/include/c++/8/backward -I/usr/lib/gcc/arm-linux-gnueabihf/8/include -I/usr/local/include -I/usr/lib/gcc/arm-linux-gnueabihf/8/include-fixed -I/usr/include/arm-linux-gnueabihf -I/usr/include mainwindow.h -o moc_mainwindow.cpp
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/pi/alarm/moc_predefs.h -I/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/linux-g++ -I/home/pi/alarm -I/home/pi/alarm -I/usr/include/arm-linux-gnueabihf/qt5 -I/usr/include/arm-linux-gnueabihf/qt5/QtWidgets -I/usr/include/arm-linux-gnueabihf/qt5/QtGui -I/usr/include/arm-linux-gnueabihf/qt5/QtTest -I/usr/include/arm-linux-gnueabihf/qt5/QtCore -I/usr/include/c++/8 -I/usr/include/arm-linux-gnueabihf/c++/8 -I/usr/include/c++/8/backward -I/usr/lib/gcc/arm-linux-gnueabihf/8/include -I/usr/local/include -I/usr/lib/gcc/arm-linux-gnueabihf/8/include-fixed -I/usr/include/arm-linux-gnueabihf -I/usr/include mainwindow.h -o moc_mainwindow.cpp
+
+moc_ibutton.cpp: ibutton.h \
+		moc_predefs.h \
+		/usr/lib/qt5/bin/moc
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/pi/alarm/moc_predefs.h -I/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/linux-g++ -I/home/pi/alarm -I/home/pi/alarm -I/usr/include/arm-linux-gnueabihf/qt5 -I/usr/include/arm-linux-gnueabihf/qt5/QtWidgets -I/usr/include/arm-linux-gnueabihf/qt5/QtGui -I/usr/include/arm-linux-gnueabihf/qt5/QtTest -I/usr/include/arm-linux-gnueabihf/qt5/QtCore -I/usr/include/c++/8 -I/usr/include/arm-linux-gnueabihf/c++/8 -I/usr/include/c++/8/backward -I/usr/lib/gcc/arm-linux-gnueabihf/8/include -I/usr/local/include -I/usr/lib/gcc/arm-linux-gnueabihf/8/include-fixed -I/usr/include/arm-linux-gnueabihf -I/usr/include ibutton.h -o moc_ibutton.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
@@ -371,14 +391,25 @@ compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean
 
 ####### Compile
 
-alarm.o: alarm.cpp mainwindow.h
+alarm.o: alarm.cpp mainwindow.h \
+		ibutton.h \
+		status.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o alarm.o alarm.cpp
 
 mainwindow.o: mainwindow.cpp mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o mainwindow.cpp
 
+ibutton.o: ibutton.cpp ibutton.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o ibutton.o ibutton.cpp
+
+status.o: status.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o status.o status.cpp
+
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
+
+moc_ibutton.o: moc_ibutton.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_ibutton.o moc_ibutton.cpp
 
 ####### Install
 

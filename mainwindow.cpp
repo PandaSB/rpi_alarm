@@ -12,7 +12,8 @@ MainWindow::MainWindow(QWidget *parent)
     //      (QApplication::translate("childwidget", "Child widget"));
     //window.show();
 
-    QLabel *status = new QLabel(QApplication::translate("windowlayout", "Désarmé"));
+    status = new QLabel(QApplication::translate("windowlayout", ""));
+    AlarmOff(0) ;
     QLineEdit *lineEdit = new QLineEdit();
     lineEdit->setText(QApplication::translate("windowlayout", "")); 
     lineEdit->setEchoMode(QLineEdit::Password);
@@ -185,10 +186,6 @@ MainWindow::MainWindow(QWidget *parent)
     font3.setPointSize(32);    
     status->setFont(font3);
     status->setAutoFillBackground(true); // IMPORTANT!
-    QPalette pal = status->palette();
-    pal.setColor(QPalette::Window, QColor(Qt::green));
-    status->setPalette(pal);
-
 
     QWidget *widget = new QWidget();
     widget->setLayout(mainLayout);
@@ -199,9 +196,41 @@ MainWindow::MainWindow(QWidget *parent)
 void MainWindow::AlarmOn (int delay)
 {
     qDebug() << "Alarm on " << delay << "secondes";
+    if ( delay == 0 )
+    {
+        QPalette pal = status->palette();
+        pal.setColor(QPalette::Window, QColor(Qt::red));
+        status->setPalette(pal);
+        status->setText ("Armé") ;
+
+    }
+    else 
+    {
+        QPalette pal = status->palette();
+        pal.setColor(QPalette::Window, QColor(Qt::yellow));
+        status->setPalette(pal);
+        status->setText (QString::number(delay));
+        QTimer::singleShot(1000, this, [=]{ AlarmOn(delay-1); });
+    }
 }
 
 void MainWindow::AlarmOff (int delay)
 {
     qDebug() << "Alarm off " << delay << "secondes";
+        if ( delay == 0 )
+    {
+        QPalette pal = status->palette();
+        pal.setColor(QPalette::Window, QColor(Qt::green));
+        status->setPalette(pal);
+        status->setText ("Désarmé") ;
+
+    }
+    else 
+    {
+        QPalette pal = status->palette();
+        pal.setColor(QPalette::Window, QColor(Qt::yellow));
+        status->setPalette(pal);
+        status->setText (QString::number(delay));
+        QTimer::singleShot(1000, this, [=]{ AlarmOn(delay-1); });
+    }
 }

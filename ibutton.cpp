@@ -18,6 +18,7 @@ void Ibutton::run()
             if (szID.compare ("not found.\n",Qt::CaseSensitive) != 0 )
             {
                 qDebug() << "ID : " << szID;
+                szID = szID.trimmed();
                 emit iButtonDetected(szID);
                 QFile fileDelete(szDelete);
                 if (fileDelete.open(QIODevice::WriteOnly))

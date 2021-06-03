@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ibutton.h"
-#include "status.h"
+#include "variables.h"
 
 #include <QApplication>
 #include <QtWidgets>
@@ -10,14 +10,19 @@ int main(int argc, char *argv[ ])
 {
 
     QApplication app(argc, argv);
-    MainWindow mainWindow;
+    MainWindow *mainWindow = new MainWindow();
     Ibutton *ibutton = new Ibutton();
-    Status *status = new Status();
+    Variables *variables = Variables::getInstance();
 
     QObject::connect(ibutton, &Ibutton::iButtonDetected , [=](QString ID) {
         qDebug() << "Callback ibutton" << ID;
+        if (variables->CheckKeyId(ID))
+        {
+            if (variables->GetAlarmStatus() == eAlarmOff) mainWindow->AlarmOn(30) ; 
+            else mainWindow->AlarmOff(0) ;
+        }
     });
     ibutton->start();
-    mainWindow.showFullScreen();
+    mainWindow->showFullScreen();
     return app.exec();
 }

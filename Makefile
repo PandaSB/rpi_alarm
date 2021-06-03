@@ -53,12 +53,12 @@ OBJECTS_DIR   = ./
 SOURCES       = alarm.cpp \
 		mainwindow.cpp \
 		ibutton.cpp \
-		status.cpp moc_mainwindow.cpp \
+		variables.cpp moc_mainwindow.cpp \
 		moc_ibutton.cpp
 OBJECTS       = alarm.o \
 		mainwindow.o \
 		ibutton.o \
-		status.o \
+		variables.o \
 		moc_mainwindow.o \
 		moc_ibutton.o
 DIST          = /usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/spec_pre.prf \
@@ -138,10 +138,10 @@ DIST          = /usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/lex.prf \
 		alarm.pro mainwindow.h \
 		ibutton.h \
-		status.h alarm.cpp \
+		variables.h alarm.cpp \
 		mainwindow.cpp \
 		ibutton.cpp \
-		status.cpp
+		variables.cpp
 QMAKE_TARGET  = alarm
 DESTDIR       = 
 TARGET        = alarm
@@ -329,8 +329,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents mainwindow.h ibutton.h status.h $(DISTDIR)/
-	$(COPY_FILE) --parents alarm.cpp mainwindow.cpp ibutton.cpp status.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents mainwindow.h ibutton.h variables.h $(DISTDIR)/
+	$(COPY_FILE) --parents alarm.cpp mainwindow.cpp ibutton.cpp variables.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -393,17 +393,18 @@ compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean
 
 alarm.o: alarm.cpp mainwindow.h \
 		ibutton.h \
-		status.h
+		variables.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o alarm.o alarm.cpp
 
-mainwindow.o: mainwindow.cpp mainwindow.h
+mainwindow.o: mainwindow.cpp mainwindow.h \
+		variables.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o mainwindow.cpp
 
 ibutton.o: ibutton.cpp ibutton.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o ibutton.o ibutton.cpp
 
-status.o: status.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o status.o status.cpp
+variables.o: variables.cpp variables.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o variables.o variables.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp

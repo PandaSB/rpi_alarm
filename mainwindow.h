@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "variables.h"
 #include <QMainWindow>
 #include <QPushButton>
 #include <QtWidgets>
@@ -15,11 +16,15 @@ class MainWindow : public QMainWindow
 {
   Q_OBJECT
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
+  explicit MainWindow(QWidget *parent = nullptr);
+  void AlarmOn (int delay) ;
+  void AlarmOn (int delay, bool bauto);
+  void AlarmOff (int delay) ;
+  void AlarmOff (int delay, bool bauto);
+
 private slots:
 private:
-    void AlarmOn (int) ;
-    void AlarmOff (int) ;
+    Variables *variablesHandle ;    
 
     QLabel *status;
 

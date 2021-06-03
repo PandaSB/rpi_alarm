@@ -11,9 +11,11 @@ MainWindow::MainWindow(QWidget *parent)
     //window.setWindowTitle
     //      (QApplication::translate("childwidget", "Child widget"));
     //window.show();
-
+    variablesHandle  = Variables::getInstance();
     status = new QLabel(QApplication::translate("windowlayout", ""));
-    AlarmOff(0) ;
+
+    if ( variablesHandle->GetAlarmStatus() == eAlarmOn) {AlarmOn(0);}
+    else {AlarmOff(0);}
     QLineEdit *lineEdit = new QLineEdit();
     lineEdit->setText(QApplication::translate("windowlayout", "")); 
     lineEdit->setEchoMode(QLineEdit::Password);
@@ -79,7 +81,7 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(button_C, &QPushButton::clicked, [=]() {
         if (Code.isEmpty() == false )
         {
-            if (Code.compare(ValidCode,Qt::CaseSensitive) == 0 )
+            if ( variablesHandle->CheckCodeAlarm(Code))
             {
                 AlarmOff(0);
             }
@@ -92,7 +94,7 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(button_S, &QPushButton::clicked, [=]() {
         if (Code.isEmpty() == false )
         {
-            if (Code.compare(ValidCode,Qt::CaseSensitive) == 0 )
+            if ( variablesHandle->CheckCodeAlarm(Code))
             {
                 AlarmOn(0);
             }
@@ -104,7 +106,7 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(button_D, &QPushButton::clicked, [=]() {
         if (Code.isEmpty() == false )
         {
-            if (Code.compare(ValidCode,Qt::CaseSensitive) == 0 )
+            if ( variablesHandle->CheckCodeAlarm(Code))
             {
                 AlarmOn(30);
             }
@@ -193,15 +195,20 @@ MainWindow::MainWindow(QWidget *parent)
 
 }
  
-void MainWindow::AlarmOn (int delay)
+void MainWindow::AlarmOn (int delay, bool bauto )
 {
     qDebug() << "Alarm on " << delay << "secondes";
+    if ((bauto) && (variablesHandle->GetAlarmStatus() != eAlarmDelayOn))
+    {
+        return ;
+    }
     if ( delay == 0 )
     {
         QPalette pal = status->palette();
         pal.setColor(QPalette::Window, QColor(Qt::red));
         status->setPalette(pal);
         status->setText ("Armé") ;
+        variablesHandle->SetAlarmStatus(eAlarmOn) ; 
 
     }
     else 
@@ -210,19 +217,31 @@ void MainWindow::AlarmOn (int delay)
         pal.setColor(QPalette::Window, QColor(Qt::yellow));
         status->setPalette(pal);
         status->setText (QString::number(delay));
-        QTimer::singleShot(1000, this, [=]{ AlarmOn(delay-1); });
+        variablesHandle->SetAlarmStatus(eAlarmDelayOn) ; 
+
+        QTimer::singleShot(1000, this, [=]{ AlarmOn(delay-1,true); });
     }
 }
 
-void MainWindow::AlarmOff (int delay)
+void MainWindow::AlarmOn (int delay )
+{
+        AlarmOn(delay, false) ; 
+}
+
+void MainWindow::AlarmOff (int delay, bool bauto)
 {
     qDebug() << "Alarm off " << delay << "secondes";
-        if ( delay == 0 )
+    if ((bauto) && (variablesHandle->GetAlarmStatus() != eAlarmDelayOff))
+    {
+        return ;
+    }
+    if ( delay == 0 )
     {
         QPalette pal = status->palette();
         pal.setColor(QPalette::Window, QColor(Qt::green));
         status->setPalette(pal);
         status->setText ("Désarmé") ;
+        variablesHandle->SetAlarmStatus(eAlarmOff) ; 
 
     }
     else 
@@ -231,6 +250,12 @@ void MainWindow::AlarmOff (int delay)
         pal.setColor(QPalette::Window, QColor(Qt::yellow));
         status->setPalette(pal);
         status->setText (QString::number(delay));
-        QTimer::singleShot(1000, this, [=]{ AlarmOn(delay-1); });
+        variablesHandle->SetAlarmStatus(eAlarmDelayOff) ; 
+        QTimer::singleShot(1000, this, [=]{ AlarmOn(delay-1,true); });
     }
+}
+
+void MainWindow::AlarmOff (int delay )
+{
+        AlarmOff(delay, false) ; 
 }

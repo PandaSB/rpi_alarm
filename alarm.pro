@@ -20,5 +20,5 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 # Input
-HEADERS += mainwindow.h ibutton.h variables.h
-SOURCES += alarm.cpp mainwindow.cpp ibutton.cpp variables.cpp
+HEADERS += mainwindow.h ibutton.h variables.h gsm.h
+SOURCES += alarm.cpp mainwindow.cpp ibutton.cpp variables.cpp gsm.cpp

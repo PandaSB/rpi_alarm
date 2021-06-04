@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ibutton.h"
 #include "variables.h"
+#include "gsm.h"
 
 #include <QApplication>
 #include <QtWidgets>
@@ -13,6 +14,7 @@ int main(int argc, char *argv[ ])
     MainWindow *mainWindow = new MainWindow();
     Ibutton *ibutton = new Ibutton();
     Variables *variables = Variables::getInstance();
+    Gsm *gsm = Gsm::getInstance();
 
     QObject::connect(ibutton, &Ibutton::iButtonDetected , [=](QString ID) {
         qDebug() << "Callback ibutton" << ID;

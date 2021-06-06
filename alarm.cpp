@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ibutton.h"
 #include "variables.h"
+#include "led.h"
 #include "gsm.h"
 
 #include <QApplication>
@@ -15,6 +16,7 @@ int main(int argc, char *argv[ ])
     Ibutton *ibutton = new Ibutton();
     Variables *variables = Variables::getInstance();
     Gsm *gsm = Gsm::getInstance();
+    Led *led = Led::getInstance();
 
     QObject::connect(ibutton, &Ibutton::iButtonDetected , [=](QString ID) {
         qDebug() << "Callback ibutton" << ID;
@@ -24,7 +26,9 @@ int main(int argc, char *argv[ ])
             else mainWindow->AlarmOff(0) ;
         }
     });
+    led->start();
     ibutton->start();
+    gsm->start();
     mainWindow->showFullScreen();
     return app.exec();
 }

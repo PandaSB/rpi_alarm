@@ -54,17 +54,21 @@ SOURCES       = alarm.cpp \
 		mainwindow.cpp \
 		ibutton.cpp \
 		variables.cpp \
-		gsm.cpp moc_mainwindow.cpp \
+		gsm.cpp \
+		led.cpp moc_mainwindow.cpp \
 		moc_ibutton.cpp \
-		moc_gsm.cpp
+		moc_gsm.cpp \
+		moc_led.cpp
 OBJECTS       = alarm.o \
 		mainwindow.o \
 		ibutton.o \
 		variables.o \
 		gsm.o \
+		led.o \
 		moc_mainwindow.o \
 		moc_ibutton.o \
-		moc_gsm.o
+		moc_gsm.o \
+		moc_led.o
 DIST          = /usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/common/unix.conf \
 		/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/common/linux.conf \
@@ -143,11 +147,13 @@ DIST          = /usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/spec_pre.prf \
 		alarm.pro mainwindow.h \
 		ibutton.h \
 		variables.h \
-		gsm.h alarm.cpp \
+		gsm.h \
+		led.h alarm.cpp \
 		mainwindow.cpp \
 		ibutton.cpp \
 		variables.cpp \
-		gsm.cpp
+		gsm.cpp \
+		led.cpp
 QMAKE_TARGET  = alarm
 DESTDIR       = 
 TARGET        = alarm
@@ -335,8 +341,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents mainwindow.h ibutton.h variables.h gsm.h $(DISTDIR)/
-	$(COPY_FILE) --parents alarm.cpp mainwindow.cpp ibutton.cpp variables.cpp gsm.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents mainwindow.h ibutton.h variables.h gsm.h led.h $(DISTDIR)/
+	$(COPY_FILE) --parents alarm.cpp mainwindow.cpp ibutton.cpp variables.cpp gsm.cpp led.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -368,9 +374,9 @@ compiler_moc_predefs_clean:
 moc_predefs.h: /usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/data/dummy.cpp
 	g++ -pipe -O2 -Wall -W -dM -E -o moc_predefs.h /usr/lib/arm-linux-gnueabihf/qt5/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all: moc_mainwindow.cpp moc_ibutton.cpp moc_gsm.cpp
+compiler_moc_header_make_all: moc_mainwindow.cpp moc_ibutton.cpp moc_gsm.cpp moc_led.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_mainwindow.cpp moc_ibutton.cpp moc_gsm.cpp
+	-$(DEL_FILE) moc_mainwindow.cpp moc_ibutton.cpp moc_gsm.cpp moc_led.cpp
 moc_mainwindow.cpp: variables.h \
 		mainwindow.h \
 		moc_predefs.h \
@@ -386,6 +392,12 @@ moc_gsm.cpp: gsm.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
 	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/pi/alarm/moc_predefs.h -I/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/linux-g++ -I/home/pi/alarm -I/home/pi/alarm -I/usr/include/arm-linux-gnueabihf/qt5 -I/usr/include/arm-linux-gnueabihf/qt5/QtWidgets -I/usr/include/arm-linux-gnueabihf/qt5/QtGui -I/usr/include/arm-linux-gnueabihf/qt5/QtTest -I/usr/include/arm-linux-gnueabihf/qt5/QtCore -I/usr/include/c++/8 -I/usr/include/arm-linux-gnueabihf/c++/8 -I/usr/include/c++/8/backward -I/usr/lib/gcc/arm-linux-gnueabihf/8/include -I/usr/local/include -I/usr/lib/gcc/arm-linux-gnueabihf/8/include-fixed -I/usr/include/arm-linux-gnueabihf -I/usr/include gsm.h -o moc_gsm.cpp
+
+moc_led.cpp: variables.h \
+		led.h \
+		moc_predefs.h \
+		/usr/lib/qt5/bin/moc
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/pi/alarm/moc_predefs.h -I/usr/lib/arm-linux-gnueabihf/qt5/mkspecs/linux-g++ -I/home/pi/alarm -I/home/pi/alarm -I/usr/include/arm-linux-gnueabihf/qt5 -I/usr/include/arm-linux-gnueabihf/qt5/QtWidgets -I/usr/include/arm-linux-gnueabihf/qt5/QtGui -I/usr/include/arm-linux-gnueabihf/qt5/QtTest -I/usr/include/arm-linux-gnueabihf/qt5/QtCore -I/usr/include/c++/8 -I/usr/include/arm-linux-gnueabihf/c++/8 -I/usr/include/c++/8/backward -I/usr/lib/gcc/arm-linux-gnueabihf/8/include -I/usr/local/include -I/usr/lib/gcc/arm-linux-gnueabihf/8/include-fixed -I/usr/include/arm-linux-gnueabihf -I/usr/include led.h -o moc_led.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
@@ -406,6 +418,7 @@ compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean
 alarm.o: alarm.cpp mainwindow.h \
 		variables.h \
 		ibutton.h \
+		led.h \
 		gsm.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o alarm.o alarm.cpp
 
@@ -422,6 +435,10 @@ variables.o: variables.cpp variables.h
 gsm.o: gsm.cpp gsm.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o gsm.o gsm.cpp
 
+led.o: led.cpp led.h \
+		variables.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o led.o led.cpp
+
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
 
@@ -430,6 +447,9 @@ moc_ibutton.o: moc_ibutton.cpp
 
 moc_gsm.o: moc_gsm.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_gsm.o moc_gsm.cpp
+
+moc_led.o: moc_led.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_led.o moc_led.cpp
 
 ####### Install
 

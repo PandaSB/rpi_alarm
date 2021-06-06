@@ -2,6 +2,7 @@
 #define GSM_H
 
 #include <QThread>
+#include <QString>
 #include <mutex>  
 
 class Gsm : public QThread
@@ -10,7 +11,9 @@ class Gsm : public QThread
     void run() override ; 
 public:
     Gsm();
-    static Gsm *getInstance();    
+    static Gsm *getInstance();  
+    void SendCmd ( QString cmd); 
+    
 
 private:
     static Gsm *instance;

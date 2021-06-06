@@ -68,9 +68,24 @@ void Gsm::run()
     {
         mtx.lock();
         num_bytes = read(serial_port, &read_buf, sizeof(read_buf));
+        //qDebug() << num_bytes ; 
         if (num_bytes < 0) {
             qDebug() << "Error reading: " << errno << " from read: " << strerror(errno);
         } 
+        if (num_bytes > 0) 
+        {
+            read_buf[num_bytes] = '\0' ; 
+            Buffer.append (read_buf) ;                 
+        }
         mtx.unlock();
     }
+}
+
+void Gsm::SendCmd ( QString cmd)
+{
+    mtx.lock();
+    QByteArray ba = cmd.toLocal8Bit();
+    const char *c_str = ba.data();
+    write(serial_port, c_str, cmd.length());
+    mtx.unlock();
 }
